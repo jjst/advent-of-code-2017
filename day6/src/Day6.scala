@@ -22,10 +22,14 @@ object Day6 extends App {
 
   lazy val memoryStates: Stream[MemoryState] = initialMemoryState #:: memoryStates.map { _.redistribute() }
 
-  val firstSeenBefore = memoryStates
+  memoryStates
     .scanLeft(Seq.empty[MemoryState]) { (states, state) => states :+ state }
-    .zipWithIndex
-    .collectFirst { case (memStates, idx) if memStates.distinct.size != memStates.size => idx }
+    .collectFirst { case memStates if memStates.distinct.size != memStates.size => memStates }
+    .foreach { cycle =>
+      val part1 = cycle.size - 1
+      println(part1)
+      val part2 = part1 - cycle.indexOf(cycle.last)
+      println(part2)
+    }
 
-  firstSeenBefore.foreach { idx => println(idx - 1) }
 }
